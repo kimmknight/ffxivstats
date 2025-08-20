@@ -1,0 +1,17 @@
+{
+  "name": "ffscrape",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
+    "express": "^5.1.0",
+    "he": "^1.2.0"
+  }
+}

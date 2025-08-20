@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFXIV stats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <div id="app" class="container-fluid">
+        <div class="d-flex gap-3 p-3">
+            <input type="text" v-model="characterID" placeholder="Enter Character ID" class="form-control" @keyup.enter="fetchCharacterObject()">
+            <button @click="fetchCharacterObject()" class="btn btn-primary btn-sm">Fetch Character</button>
+        </div>
+        <div v-for="(d, dkey) in characterObject" :key="dkey" v-if="characterID">
+            <div class="my-4" v-if="dkey == 'details'">
+                <div class="display-1">{{ d.name }}</div>
+                <div>{{ d.world }}</div>
+            </div>
+            <div v-else>
+                <div class="display-5 my-4">{{ dkey }}</div>
+                <div class="d-flex flex-wrap gap-2">
+                    <div v-for="(role, roleKey) in d" :key="roleKey">
+                        <div class="card" style="width: 18rem;" v-if="role.jobs.length > 0">
+                            <div class="card-header d-flex gap-2">
+                                <img v-if="role.icon" :src="role.icon" alt="Character Image" class="img-fluid">
+                                <div class="mt-1"><span class="fw-bold">{{ roleKey }}</span></div>
+                            </div>
+                            <div class="card-body">
+                                <div v-for="(job, jobKey) in role.jobs" :key="jobKey">
+                                    <div class="d-flex gap-1">
+                                        <img :src="job.job_icon" alt="Job Icon" class="img-fluid mb-1" style="width: 24px; height: 24px;">
+                                        <span class="fw-bold text-success mx-1">{{job.job_level}}</span>
+                                        <span>{{ job.job_name }}</span>
+                                        <span class="flex-grow-1 text-end"><b>{{ job.job_exp.toLocaleString() }}</b></span>
+                                        <!-- <span> / {{ job.job_exp_max }}</span> -->
+                                        <!-- <span class="small">{{ Math.round(job.job_exp_max / job.job_exp) }}%</span> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vueApp = {
+
+            data() {
+                return {
+                    characterObject: {},
+                    characterID: ""
+                }
+            },
+
+            methods: {
+                fetchCharacterObject() {
+                    fetch("/character/" + this.characterID)
+                        .then( (httpResponse) => httpResponse.json() )
+                        .then( (responseData) => { this.characterObject = responseData } )
+                }
+            },
+
+        }
+
+        app = Vue.createApp(vueApp)
+        vm = app.mount("#app")
+    </script>
+</body>
+
+</html>
